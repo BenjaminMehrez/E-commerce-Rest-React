@@ -2,7 +2,6 @@ venv/
 media/
 static/
 node/
-migrations/
 __pycache__/
 .env
 .DS_Store

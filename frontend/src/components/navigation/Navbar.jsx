@@ -12,10 +12,10 @@ function Navbar() {
             <Link>Products</Link>
           </li>
           <li>
-            <Link>Sign In</Link>
+            <Link to="/login">Sign In</Link>
           </li>
           <li>
-            <Link>Sign Up</Link>
+            <Link to="/signup">Sign Up</Link>
           </li>
         </ul>
       </nav>
