@@ -13,6 +13,7 @@ import {
   AUTHENTICATED_FAIL,
   REFRESH_SUCCESS,
   REFRESH_FAIL,
+  LOGOUT,
 } from "./types";
 import { setAlert } from "./alert";
 import axios from "axios";
@@ -294,3 +295,11 @@ export const refresh = () => async (dispatch) => {
     });
   }
 };
+
+
+export const logout = () => dispatch => {
+  dispatch({
+    type: LOGOUT
+  })
+  dispatch(setAlert('Sesion cerrada', 'green'))
+}

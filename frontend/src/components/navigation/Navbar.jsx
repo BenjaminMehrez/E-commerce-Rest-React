@@ -1,11 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Alert from "../../components/Alert";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { logout } from "../../redux/actions/auth";
 import { connect } from "react-redux";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
-function Navbar({ isAuthenticated, user }) {
+function Navbar({ isAuthenticated, user, logout }) {
+
+  const [redirect, setRedirect] = useState(false)
+
+  const handlerLogout = async () => {
+    await logout()
+    setRedirect(true)
+  }
+
+  if (redirect) {
+    return <Navigate to="/" />
+  }
+
   const authLinks = (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -54,7 +67,7 @@ function Navbar({ isAuthenticated, user }) {
           <form action="#" method="POST">
             <MenuItem>
               <button
-                type="submit"
+                onClick={handlerLogout}
                 className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
               >
                 Log out
@@ -102,4 +115,6 @@ const mapStateToProps = (state) => ({
   user: state.counter.Auth.user,
 });
 
-export default connect(mapStateToProps, {})(Navbar);
+export default connect(mapStateToProps, {
+  logout,
+})(Navbar);

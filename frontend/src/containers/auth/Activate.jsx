@@ -3,7 +3,7 @@ import Layout from "../../hocs/Layout";
 import { useState } from "react";
 import { connect } from "react-redux";
 import { activate } from "../../redux/actions/auth";
-import { Oval } from "react-loader-spinner";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Activate = ({ activate, loading }) => {
   const [activated, setActivated] = useState(false);
@@ -25,21 +25,17 @@ const Activate = ({ activate, loading }) => {
       <div className="max-w-7xl h-120 mx-auto px-4 sm:px-4 lg:px-8">
         <div className="max-w-3xl mx-auto">
           {loading ? (
-            <button className="items-center bg-violet-800 text-white p-4 rounded ">
-              <Oval
-                visible={true}
-                height="20"
-                width="20"
-                color="#4fa94d"
-                ariaLabel="oval-loading"
-                wrapperStyle={{}}
-                wrapperClass=""
+            <button className="items-center bg-violet-800 text-white p-4 rounded w-40 h-14">
+              <ClipLoader
+                color="white" loading={true} size={20}
+                aria-label="Loading Spinner"
+                data-testid="loader"
               />
             </button>
           ) : (
             <button
               onClick={activateAccount}
-              className="items-center bg-violet-800 text-white p-4 rounded "
+              className="items-center bg-violet-800 text-white p-4 rounded w-40 h-14"
             >
               Activate Account
             </button>

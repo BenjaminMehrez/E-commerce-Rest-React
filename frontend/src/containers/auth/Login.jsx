@@ -3,7 +3,7 @@ import Layout from "../../hocs/Layout";
 
 import { connect } from "react-redux";
 import { login } from "../../redux/actions/auth";
-import { Oval } from "react-loader-spinner";
+import ClipLoader from "react-spinners/ClipLoader";
 
 function Login({ login, loading }) {
   useEffect(() => {
@@ -88,14 +88,12 @@ function Login({ login, loading }) {
               <div>
                 {loading ? (
                   <button className="items-center bg-violet-800 text-white p-4 rounded ">
-                    <Oval
-                      visible={true}
-                      height="20"
-                      width="20"
-                      color="#4fa94d"
-                      ariaLabel="oval-loading"
-                      wrapperStyle={{}}
-                      wrapperClass=""
+                    <ClipLoader
+                      color="white"
+                      loading={true}
+                      size={20}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
                     />
                   </button>
                 ) : (
