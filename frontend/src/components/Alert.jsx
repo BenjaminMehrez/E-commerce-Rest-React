@@ -30,7 +30,7 @@ function Alert({ alert }) {
 }
 
 const mapStateToProps = (state) => ({
-  alert: state.Alert.alert,
+  alert: state.counter.Alert.alert,
 });
 
 export default connect(mapStateToProps)(Alert);

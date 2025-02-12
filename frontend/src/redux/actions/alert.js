@@ -5,7 +5,7 @@ export const setAlert =
   (dispatch) => {
     dispatch({
       type: SET_ALERT,
-      payload: { img, alertType },
+      payload: { msg, alertType },
     });
 
     setTimeout(() => {
