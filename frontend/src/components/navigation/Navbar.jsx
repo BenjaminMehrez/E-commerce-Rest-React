@@ -99,7 +99,7 @@ function Navbar({ isAuthenticated, user, logout }) {
           </div>
           <ul className="flex gap-10">
             <li>
-              <Link>Products</Link>
+              <Link to="/">Products</Link>
             </li>
             {isAuthenticated ? authLinks : guestLinks}
           </ul>

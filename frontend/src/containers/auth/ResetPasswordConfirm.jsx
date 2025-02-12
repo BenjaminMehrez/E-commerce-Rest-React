@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
 import Layout from "../../hocs/Layout";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { login } from "../../redux/actions/auth";
+import { reset_password_confirm } from "../../redux/actions/auth";
 import ClipLoader from "react-spinners/ClipLoader";
 
-function Login({ login, loading }) {
+function ResetPasswordConfirm({ reset_password_confirm, loading }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const params = useParams();
+
+  const [requestSent, setRequestSent] = useState(false);
+
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    new_password: "",
+    new_re_password: "",
   });
 
-  const { email, password } = formData;
+  const { new_password, new_re_password } = formData;
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,10 +27,21 @@ function Login({ login, loading }) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    login(email, password);
+    const uid = params.uid;
+    const token = params.token;
+    reset_password_confirm(uid, token, new_password, new_re_password);
+
+    if (new_password === new_re_password) {
+      setRequestSent(true);
+    }
+
     console.log(formData);
     window.scrollTo(0, 0);
   };
+
+  if (requestSent && !loading) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <Layout>
@@ -39,17 +54,8 @@ function Login({ login, loading }) {
               className="mx-auto h-10 w-auto"
             />
             <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-              Sign up
+              Get your new password
             </h2>
-            <p className="mt-2 text-center text-sm/6 text-gray-600">
-              Or{" "}
-              <Link
-                to="/signup"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                register
-              </Link>
-            </p>
           </div>
 
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -59,14 +65,15 @@ function Login({ login, loading }) {
                   htmlFor="email"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
-                  Email address
+                  New Password
                 </label>
                 <div className="mt-2">
                   <input
-                    value={email}
+                    placeholder="Password"
+                    value={new_password}
                     onChange={(e) => onChange(e)}
-                    name="email"
-                    type="email"
+                    name="new_password"
+                    type="password"
                     required
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                   />
@@ -79,26 +86,19 @@ function Login({ login, loading }) {
                     htmlFor="password"
                     className="block text-sm/6 font-medium text-gray-900"
                   >
-                    Password
+                    Repeat Password
                   </label>
                 </div>
                 <div className="mt-2">
                   <input
-                    value={password}
                     onChange={(e) => onChange(e)}
-                    name="password"
+                    value={new_re_password}
+                    name="new_re_password"
                     type="password"
                     required
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                   />
                 </div>
-              </div>
-
-              <div className="text-sm">
-                <Link to="/reset_password" className="font-medium text-indigo-600">
-                  Forgot your password?
-                </Link>
-
               </div>
 
               <div>
@@ -117,7 +117,7 @@ function Login({ login, loading }) {
                     type="submit"
                     className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
-                    Login
+                    Reset Password
                   </button>
                 )}
               </div>
@@ -134,5 +134,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  login,
-})(Login);
+  reset_password_confirm,
+})(ResetPasswordConfirm);
