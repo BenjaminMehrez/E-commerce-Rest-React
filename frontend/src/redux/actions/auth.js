@@ -1,8 +1,19 @@
-import { SIGNUP_SUCCESS, SIGNUP_FAIL } from "./types";
+import {
+  SIGNUP_SUCCESS,
+  SIGNUP_FAIL,
+  ACTIVATION_SUCCESS,
+  ACTIVATION_FAIL,
+  SET_AUTH_LOADING,
+  REMOVE_AUTH_LOADING,
+} from "./types";
 import axios from "axios";
 
 export const signup =
   (first_name, last_name, email, password, re_password) => async (dispatch) => {
+    dispatch({
+      type: SET_AUTH_LOADING,
+    });
+
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -18,22 +29,76 @@ export const signup =
     });
 
     try {
-        const res = await axios.post(`http://localhost:8000/auth/users/`, body, config);        
-        if (res.status === 201) {
-            dispatch({
-                type: SIGNUP_SUCCESS,
-                payload: res.data,
-            });
-        } else {
-            dispatch({
-                type: SIGNUP_FAIL,
-            });
-        }
-    } catch (error) {
+      const res = await axios.post(
+        `http://localhost:8000/auth/users/`,
+        body,
+        config
+      );
+      if (res.status === 201) {
         dispatch({
-            type: SIGNUP_FAIL,
-        })
+          type: SIGNUP_SUCCESS,
+          payload: res.data,
+        });
+      } else {
+        dispatch({
+          type: SIGNUP_FAIL,
+        });
+      }
+      dispatch({
+        type: REMOVE_AUTH_LOADING,
+      });
+    } catch (error) {
+      dispatch({
+        type: SIGNUP_FAIL,
+      });
+      dispatch({
+        type: REMOVE_AUTH_LOADING,
+      });
     }
-
-
   };
+
+export const activate = (uid, token) => async (dispatch) => {
+  dispatch({
+    type: SET_AUTH_LOADING,
+  });
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const body = JSON.stringify({
+    uid,
+    token,
+  });
+
+  try {
+    const res = await axios.post(
+      `http://localhost:8000/auth/users/activation/`,
+      body,
+      config
+    );
+
+    if (res.status === 200) {
+      dispatch({
+        type: ACTIVATION_SUCCESS,
+      });
+    } else {
+      dispatch({
+        type: ACTIVATION_FAIL,
+      });
+    }
+    dispatch({
+      type: REMOVE_AUTH_LOADING,
+    });
+  } catch (error) {
+    dispatch({
+      type: ACTIVATION_FAIL,
+    });
+    dispatch({
+      type: REMOVE_AUTH_LOADING,
+    });
+    console.log(error);
+  }
+};
