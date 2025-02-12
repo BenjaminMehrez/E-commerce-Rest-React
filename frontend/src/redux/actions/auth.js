@@ -6,6 +6,7 @@ import {
   SET_AUTH_LOADING,
   REMOVE_AUTH_LOADING,
 } from "./types";
+import { setAlert } from "./alert";
 import axios from "axios";
 
 export const signup =
@@ -39,10 +40,13 @@ export const signup =
           type: SIGNUP_SUCCESS,
           payload: res.data,
         });
+        dispatch(setAlert('Te enviamos un correo, por favor activa tu cuenta', 'green'))
       } else {
         dispatch({
           type: SIGNUP_FAIL,
         });
+        dispatch(setAlert('Error al crear cuenta', 'red'))
+
       }
       dispatch({
         type: REMOVE_AUTH_LOADING,
@@ -54,6 +58,8 @@ export const signup =
       dispatch({
         type: REMOVE_AUTH_LOADING,
       });
+      dispatch(setAlert('Error conectando con el servidor, intenta mas tarde', 'red'))
+
     }
   };
 
@@ -84,10 +90,13 @@ export const activate = (uid, token) => async (dispatch) => {
       dispatch({
         type: ACTIVATION_SUCCESS,
       });
+      dispatch(setAlert('Cuenta Activada correctamente', 'green'))
+
     } else {
       dispatch({
         type: ACTIVATION_FAIL,
       });
+      dispatch(setAlert('Error al activar cuenta', 'red '))
     }
     dispatch({
       type: REMOVE_AUTH_LOADING,
@@ -100,5 +109,7 @@ export const activate = (uid, token) => async (dispatch) => {
       type: REMOVE_AUTH_LOADING,
     });
     console.log(error);
+    dispatch(setAlert('Error al conectar con el servidor, intenta mas tarde.', 'red '))
+    
   }
 };
