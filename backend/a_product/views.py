@@ -22,7 +22,7 @@ class ProductDetailView(APIView):
             )
         if Product.objects.filter(id=product_id).exists():
             product = Product.objects.get(id=product_id)
-            serializer = ProductSerializer(product)
+            product = ProductSerializer(product)
             return Response({'product': product.data}, status=status.HTTP_200_OK)
         else:
             return Response(
@@ -64,27 +64,24 @@ class ListProductsView(APIView):
             products = Product.objects.order_by(sortBy).all()[:int(limit)]
         else:
             products = Product.objects.order_by(sortBy).all()
-            
-            
+
         products = ProductSerializer(products, many=True)
-        
+
         if products:
-            return Response ({'products': products.data}, status=status.HTTP_200_OK)
-        else: 
+            return Response({'products': products.data}, status=status.HTTP_200_OK)
+        else:
             return Response(
                 {'error': 'No products to list'},
                 status=status.HTTP_404_NOT_FOUND
             )
-            
-            
-            
-            
+
+
 class ListSearchView(APIView):
     permission_classes = (permissions.AllowAny, )
-    
+
     def post(self, request, format=None):
         data = self.request.data
-        
+
         try:
             category_id = int(data['category_id'])
         except:
@@ -92,9 +89,9 @@ class ListSearchView(APIView):
                 {'error': 'Category ID must be an integer'},
                 status=status.HTTP_404_NOT_FOUND
             )
-            
+
         search = data['search']
-        
+
         # Chequear si input es vacio
         if len(search) == 0:
             # Mostrar todos los productos
@@ -105,49 +102,51 @@ class ListSearchView(APIView):
                 Q(name__icontains=search) |
                 Q(description__icontains=search)
             )
-            
+
         if category_id == 0:
             search_results = ProductSerializer(search_results, many=True)
             return Response(
                 {'search_products': search_results.data},
                 status=status.HTTP_200_OK
             )
-            
-            
+
         if not Category.objects.filter(id=category_id).exists():
             return Response(
                 {'error': 'Category does not exist'},
                 status=status.HTTP_404_NOT_FOUND
             )
-            
+
         category = Category.objects.get(id=category_id)
-        
+
         # Si la categoria tiene padre, filtrar solo por la categoria y no el padre tambien
         if category.parent:
-            search_results = search_results.order_by('-date_created').filter(category=category)
+            search_results = search_results.order_by(
+                '-date_created').filter(category=category)
         else:
             # Si esta categoria padre no tiene hijos, filtrar solo la categoria
             if not Category.objects.filter(parent=category).exists():
-                search_results = search_results.order_by('-date_created').filter(category=category)
+                search_results = search_results.order_by(
+                    '-date_created').filter(category=category)
             else:
                 # Si la categoria tiene hijos, filtrar por la categoria y los hijos
                 categories = Category.objects.filter(parent=category)
                 filtered_categories = [category]
-                
+
                 for cat in categories:
                     filtered_categories.append(cat)
-                    
+
                 filtered_categories = tuple(filtered_categories)
-                
-                search_results = search_results.order_by('-date_created').filter(category__in=filtered_categories)
-        
+
+                search_results = search_results.order_by(
+                    '-date_created').filter(category__in=filtered_categories)
+
         search_results = ProductSerializer(search_results, many=True)
         return Response({'search_products': search_results.data}, status=status.HTTP_200_OK)
-    
-    
-class ListRelatedProductsView(APIView):
+
+
+class ListRelatedView(APIView):
     permission_classes = (permissions.AllowAny, )
-    
+
     def get(self, request, productId, format=None):
         try:
             product_id = int(productId)
@@ -156,63 +155,66 @@ class ListRelatedProductsView(APIView):
                 {'error': 'Product ID must be an integer'},
                 status=status.HTTP_404_NOT_FOUND
             )
-        
+
         if not Product.objects.filter(id=product_id).exists():
-            return Response (
+            return Response(
                 {'error': 'Product does not exist'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
         category = Product.objects.get(id=product_id).category
-        
+
         if Product.objects.filter(category=category).exists():
             if category.parent:
-                related_products = Product.objects.order_by('-sold').filter(category=category)
+                related_products = Product.objects.order_by(
+                    '-sold').filter(category=category)
             else:
                 if not Category.objects.filter(parent=category).exists():
-                    related_products = related_products.order_by('-sold').filter(category=category)
+                    related_products = Product.objects.order_by(
+                        '-sold').filter(category=category)
                 else:
                     categories = Category.objects.filter(parent=category)
                     filtered_categories = [category]
-                    
+
                     for cat in categories:
                         filtered_categories.append(cat)
-                        
+
                     filtered_categories = tuple(filtered_categories)
-                    related_products = related_products.order_by('-sold').filter(category__in=filtered_categories)
-            
+                    related_products = Product.objects.order_by(
+                        '-sold').filter(category__in=filtered_categories)
+
             related_products = related_products.exclude(id=product_id)
             related_products = ProductSerializer(related_products, many=True)
-            
+
             if len(related_products.data) > 3:
                 return Response(
                     {'related_products': related_products.data[:3]},
                     status=status.HTTP_200_OK
-                ) 
+                )
             elif len(related_products.data) > 0:
                 return Response(
                     {'related_products': related_products.data},
                     status=status.HTTP_200_OK
-                )              
+                )
             else:
                 return Response(
                     {'error': 'No related products found'},
                     status=status.HTTP_200_OK
                 )
-                
+
         else:
             return Response(
                 {'error': 'No related products found'},
                 status=status.HTTP_200_OK
             )
-            
-            
+
+
 class ListBySearchView(APIView):
     permission_classes = (permissions.AllowAny, )
-    
+
     def post(self, request, format=None):
         data = self.request.data
-        
+
         try:
             category_id = int(data['category_id'])
         except:
@@ -222,12 +224,12 @@ class ListBySearchView(APIView):
             )
         price_range = data['price_range']
         sort_by = data['sort_by']
-        
+
         if not (sort_by == 'date_created' or sort_by == 'price' or sort_by == 'sold' or sort_by == 'name'):
             sort_by = 'date_created'
-            
+
         order = data['order']
-        
+
         if category_id == 0:
             product_results = Product.objects.all()
         elif not Category.objects.filter(id=category_id).exists():
@@ -245,13 +247,14 @@ class ListBySearchView(APIView):
                 else:
                     categories = Category.objects.filter(parent=category)
                     filtered_categories = [category]
-                    
+
                     for cat in categories:
                         filtered_categories.append(cat)
-                        
+
                     filtered_categories = tuple(filtered_categories)
-                    product_results = Product.objects.filter(category__in=filtered_categories)
-        
+                    product_results = Product.objects.filter(
+                        category__in=filtered_categories)
+
         if price_range == '1 - 19':
             product_results = product_results.filter(price_gte=1)
             product_results = product_results.filter(price_lt=20)
@@ -266,8 +269,7 @@ class ListBySearchView(APIView):
             product_results = product_results.filter(price_lt=80)
         elif price_range == 'More than 80':
             product_results = product_results.filter(price_gte=80)
-            
-            
+
         if order == 'desc':
             sort_by = '-' + sort_by
             product_results = product_results.order_by(sort_by)
@@ -275,10 +277,9 @@ class ListBySearchView(APIView):
             product_results = product_results.order_by(sort_by)
         else:
             product_results = product_results.order_by(sort_by)
-            
-            
+
         product_results = ProductSerializer(product_results, many=True)
-        
+
         if len(product_results.data) > 0:
             return Response(
                 {'filtered_products': product_results.data},
