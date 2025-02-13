@@ -24,6 +24,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_ckeditor_5',
     'coreapi',
-    'a_user'
+    'a_user',
+    'a_pcategory',
 ]
 
 
