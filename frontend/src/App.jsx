@@ -8,6 +8,7 @@ import ResetPassword from "./containers/auth/ResetPassword";
 import Activate from "./containers/auth/Activate";
 import Error404 from "./containers/errors/Error404";
 import Home from "./containers/Home";
+import Shop from "./containers/Shop";
 import ResetPasswordConfirm from "./containers/auth/ResetPasswordConfirm";
 
 function App() {
@@ -23,6 +24,9 @@ function App() {
         <Route exact path="/reset_password" element={<ResetPassword />} />
         <Route exact path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />} />
         <Route exact path="/activate/:uid/:token" element={<Activate />} />
+
+        <Route exact path="/shop" element={<Shop />} />
+        
       </Routes>
     </BrowserRouter>
   );

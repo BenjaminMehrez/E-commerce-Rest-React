@@ -94,12 +94,12 @@ function Navbar({ isAuthenticated, user, logout }) {
     <>
       <div className="sticky top-0 bg-slate-950 h-16 text-white">
         <nav className="max-w-300 mx-auto flex h-full items-center justify-between">
-          <div>
+          <Link to="/">
             <img src="/logo.webp" alt="logo" className="w-17" />
-          </div>
+          </Link>
           <ul className="flex gap-10">
             <li>
-              <Link to="/">Products</Link>
+              <Link to="/shop">Products</Link>
             </li>
             {isAuthenticated ? authLinks : guestLinks}
           </ul>
