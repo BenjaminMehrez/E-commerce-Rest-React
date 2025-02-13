@@ -10,7 +10,7 @@ export const get_categories = () => async (dispatch) => {
     }
 
     try {
-        const res = await axios.get('http://localhost:8000/api/category/categories/', config)
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/category/categories/`, config)
         if ( res.status === 200 ) {
             dispatch({
                 type: GET_CATEGORIES_SUCCESS,

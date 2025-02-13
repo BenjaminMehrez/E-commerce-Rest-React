@@ -37,7 +37,7 @@ export const check_authenticated = () => async (dispatch) => {
 
     try {
       const res = await axios.post(
-        `http://localhost:8000/auth/jwt/verify/`,
+        `${import.meta.env.VITE_API_URL}/auth/jwt/verify/`,
         body,
         config
       );
@@ -85,7 +85,7 @@ export const signup =
 
     try {
       const res = await axios.post(
-        `http://localhost:8000/auth/users/`,
+        `${import.meta.env.VITE_API_URL}/auth/users/`,
         body,
         config
       );
@@ -130,7 +130,7 @@ export const load_user = () => async (dispatch) => {
 
     try {
       const res = await axios.get(
-        `http://localhost:8000/auth/users/me/`,
+        `${import.meta.env.VITE_API_URL}/auth/users/me/`,
         config
       );
       if (res.status === 200) {
@@ -173,7 +173,7 @@ export const login = (email, password) => async (dispatch) => {
 
   try {
     const res = await axios.post(
-      `http://localhost:8000/auth/jwt/create`,
+      `${import.meta.env.VITE_API_URL}/auth/jwt/create`,
       body,
       config
     );
@@ -228,7 +228,7 @@ export const activate = (uid, token) => async (dispatch) => {
 
   try {
     const res = await axios.post(
-      `http://localhost:8000/auth/users/activation/`,
+      `${import.meta.env.VITE_API_URL}/auth/users/activation/`,
       body,
       config
     );
@@ -276,7 +276,7 @@ export const refresh = () => async (dispatch) => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/auth/jwt/refresh/",
+        `${import.meta.env.VITE_API_URL}/auth/jwt/refresh/`,
         body,
         config
       );
@@ -317,7 +317,7 @@ export const reset_password = (email) => async (dispatch) => {
 
   try {
     const res = await axios.post(
-      "http://localhost:8000/auth/users/reset_password/",
+      `${import.meta.env.VITE_API_URL}/auth/users/reset_password/`,
       body,
       config
     );
@@ -379,7 +379,7 @@ export const reset_password_confirm =
     } else {
       try {
         const res = await axios.post(
-          "http://localhost:8000/auth/users/reset_password_confirm/",
+          `${import.meta.env.VITE_API_URL}/auth/users/reset_password_confirm/`,
           body,
           config
         );

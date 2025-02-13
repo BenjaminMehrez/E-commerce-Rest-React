@@ -1,12 +1,44 @@
 import Layout from "../hocs/Layout"
+import { connect } from 'react-redux';
+import { 
+    get_products_by_arrival, 
+    get_products_by_sold 
+} from '../redux/actions/products';
+import { useEffect } from "react";
+import Banner from '../components/home/Banner'
+import ProductsArrival from '../components/home/ProductsArrival'
+import ProductsSold from '../components/home/ProductsSold'
+const Home = ({
+    get_products_by_arrival, 
+    get_products_by_sold,
+    products_arrival,
+    products_sold
+}) => {
 
-function Home() {
-  return (
-    <Layout>
-        <div className="text-3xl">
-        </div>
-    </Layout>
-  )
+    useEffect(() => {
+        window.scrollTo(0, 0);
+
+        get_products_by_arrival();
+        get_products_by_sold();
+    }, []);
+
+    return(
+        <Layout>
+            <div className="text-blue-500">
+                <Banner/>
+                <ProductsArrival data={products_arrival}/>
+                <ProductsSold data={products_sold}/>
+            </div>
+        </Layout>
+    )
 }
 
-export default Home
+const mapStateToProps = state => ({
+    products_arrival: state.counter.Products.products_arrival,
+    products_sold: state.counter.Products.products_sold,
+})
+
+export default connect(mapStateToProps,{
+    get_products_by_arrival, 
+    get_products_by_sold,
+}) (Home)
