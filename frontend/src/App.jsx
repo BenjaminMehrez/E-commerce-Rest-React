@@ -10,6 +10,7 @@ import Error404 from "./containers/errors/Error404";
 import Home from "./containers/Home";
 import Shop from "./containers/Shop";
 import ResetPasswordConfirm from "./containers/auth/ResetPasswordConfirm";
+import ProductDetail from "./containers/pages/ProductDetail";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route exact path="/activate/:uid/:token" element={<Activate />} />
 
         <Route exact path="/shop" element={<Shop />} />
+        <Route exact path="/product/:productId" element={<ProductDetail />} />
         
       </Routes>
     </BrowserRouter>
