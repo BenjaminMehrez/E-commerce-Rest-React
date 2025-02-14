@@ -5,7 +5,7 @@ import { Facebook, Instagram, Twitter, Github, Youtube } from "lucide-react"
 
 function Footer() {
   return (
-    <footer className="bg-slate-950 text-slate-300 py-12 px-4">
+    <footer className="text-slate-300 py-12 px-4" style={{backgroundColor: "#0B0000"}}>
       <div className="container mx-auto max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-8">
           {/* Logo and Social Section */}
@@ -17,7 +17,7 @@ function Footer() {
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
-                className="h-8 w-8 text-indigo-500"
+                className="h-8 w-8"
               >
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>

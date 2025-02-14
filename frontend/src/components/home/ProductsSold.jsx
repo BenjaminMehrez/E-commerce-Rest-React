@@ -8,12 +8,13 @@ function ProductsSold({ data }) {
           <h2 className="text-2xl font-extrabold tracking-tight text-gray-900">
             Productos más vendidos
           </h2>
-          <a
-            href="#"
-            className="hidden text-sm font-semibold text-indigo-600 hover:text-indigo-500 sm:block"
+          <Link
+            style={{ color: "#0B0000" }}
+            to="#"
+            className="hidden text-sm font-semibold sm:block hover:underline"
           >
-            Browse all favorites<span aria-hidden="true"> &rarr;</span>
-          </a>
+            Explora todos los produtos<span aria-hidden="true"> &rarr;</span>
+          </Link>
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-y-0 sm:gap-x-6 lg:gap-x-8">

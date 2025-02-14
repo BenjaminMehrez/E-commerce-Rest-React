@@ -4,12 +4,11 @@ function Banner() {
       <div className="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 sm:static">
           <div className="sm:max-w-lg">
-            <h1 className="text-4xl font font-extrabold tracking-tight text-gray-900 sm:text-6xl">
-              Summer styles are finally here
+            <h1 className="text-4xl font font-extrabold tracking-tight text-gray-900 sm:text-5xl">
+              Los estilos de verano finalmente están aquí
             </h1>
             <p className="mt-4 text-xl text-gray-500">
-              This year, our new summer collection will shelter you from the
-              harsh elements of a world that doesn't care if you live or die.
+            Este año, nuestra nueva colección de verano te protegerá de los duros elementos de un mundo al que no le importa si vives o mueres.
             </p>
           </div>
           <div>
@@ -81,10 +80,11 @@ function Banner() {
               </div>
 
               <a
+                style={{backgroundColor: "#0B0000"}}
                 href="#"
-                className="inline-block text-center bg-indigo-600 border border-transparent rounded-md py-3 px-8 font-medium text-white hover:bg-indigo-700"
+                className="inline-block text-center border border-transparent rounded-md py-3 px-8 font-medium text-white"
               >
-                Shop Collection
+                Colección de la tienda
               </a>
             </div>
           </div>

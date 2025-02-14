@@ -25,7 +25,7 @@ export const get_products = () => async (dispatch) => {
 
   try {
     const res = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/product/get-products/`,
+      `${import.meta.env.VITE_API_URL}/api/product/get-products`,
       config
     );
     if (res.status === 200) {
