@@ -6,66 +6,13 @@ import {
   get_related_products,
 } from "../../redux/actions/products";
 import { useEffect } from "react";
-import { useState } from "react";
-import { Disclosure, RadioGroup, Tab } from "@headlessui/react";
-import { HeartIcon, PlusSmallIcon, StarIcon } from "@heroicons/react/24/solid";
 import ImageGallery from "../../components/product/ImageGallery";
-
-const product = {
-  name: "Zip Tote Basket",
-  price: "$140",
-  rating: 4,
-  images: [
-    {
-      id: 1,
-      name: "Angled view",
-      src: "https://tailwindui.com/plus-assets/img/ecommerce-images/product-page-02-featured-product-shot.jpg",
-      alt: "Angled front view with bag zipped and handles upright.",
-    },
-    // More images...
-  ],
-  colors: [
-    {
-      name: "Washed Black",
-      bgColor: "bg-gray-700",
-      selectedColor: "ring-gray-700",
-    },
-    { name: "White", bgColor: "bg-white", selectedColor: "ring-gray-400" },
-    {
-      name: "Washed Gray",
-      bgColor: "bg-gray-500",
-      selectedColor: "ring-gray-500",
-    },
-  ],
-  description: `
-    <p>The Zip Tote Basket is the perfect midpoint between shopping tote and comfy backpack. With convertible straps, you can hand carry, should sling, or backpack this convenient and spacious bag. The zip top and durable canvas construction keeps your goods protected for all-day use.</p>
-  `,
-  details: [
-    {
-      name: "Features",
-      items: [
-        "Multiple strap configurations",
-        "Spacious interior with top zip",
-        "Leather handle and tabs",
-        "Interior dividers",
-        "Stainless strap loops",
-        "Double stitched construction",
-        "Water-resistant",
-      ],
-    },
-    // More sections...
-  ],
-};
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function ProductDetail({ get_related_products, get_product, product }) {
   useEffect(() => {
     get_product(productId);
     get_related_products(productId);
-  });
+  }, []);
   const params = useParams();
   const productId = params.productId;
   return (
@@ -171,11 +118,9 @@ function ProductDetail({ get_related_products, get_product, product }) {
                 </p>
 
                 <div className="mt-4 flex sm:flex-col1">
-                    <button
-                      className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
-                    >
-                      Agregar al Carrito
-                    </button>
+                  <button className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
+                    Agregar al Carrito
+                  </button>
                 </div>
               </div>
             </div>

@@ -19,7 +19,7 @@ import {
 export const get_products = () => async (dispatch) => {
   const config = {
     headers: {
-      'Accept': "application/json",
+      Accept: "application/json",
     },
   };
 
@@ -48,7 +48,7 @@ export const get_products = () => async (dispatch) => {
 export const get_products_by_arrival = () => async (dispatch) => {
   const config = {
     headers: {
-      'Accept': "application/json",
+      Accept: "application/json",
     },
   };
 
@@ -79,7 +79,7 @@ export const get_products_by_arrival = () => async (dispatch) => {
 export const get_products_by_sold = () => async (dispatch) => {
   const config = {
     headers: {
-      'Accept': "application/json",
+      Accept: "application/json",
     },
   };
 
@@ -110,7 +110,7 @@ export const get_products_by_sold = () => async (dispatch) => {
 export const get_product = (productId) => async (dispatch) => {
   const config = {
     headers: {
-      'Accept': "application/json",
+      Accept: "application/json",
     },
   };
 
@@ -140,7 +140,7 @@ export const get_product = (productId) => async (dispatch) => {
 export const get_related_products = (productId) => async (dispatch) => {
   const config = {
     headers: {
-      'Accept': "application/json",
+      Accept: "application/json",
     },
   };
 
@@ -189,7 +189,8 @@ export const get_filtered_products =
         body,
         config
       );
-      if (res.status == 200) {
+
+      if (res.status === 200 && !res.data.error) {
         dispatch({
           type: FILTER_PRODUCTS_SUCCESS,
           payload: res.data,
@@ -199,7 +200,7 @@ export const get_filtered_products =
           type: FILTER_PRODUCTS_FAIL,
         });
       }
-    } catch (error) {
+    } catch (err) {
       dispatch({
         type: FILTER_PRODUCTS_FAIL,
       });
@@ -210,7 +211,7 @@ export const get_search_products =
   (search, category_id) => async (dispatch) => {
     const config = {
       headers: {
-        'Accept': "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
     };
