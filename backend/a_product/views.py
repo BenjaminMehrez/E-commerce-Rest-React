@@ -256,19 +256,19 @@ class ListBySearchView(APIView):
                         category__in=filtered_categories)
 
         if price_range == '1 - 19':
-            product_results = product_results.filter(price__gte=1)
-            product_results = product_results.filter(price__lt=20)
+            product_results = product_results.filter(price_gte=1)
+            product_results = product_results.filter(price_lt=20)
         elif price_range == '20 - 39':
-            product_results = product_results.filter(price__gte=20)
-            product_results = product_results.filter(price__lt=40)
+            product_results = product_results.filter(price_gte=20)
+            product_results = product_results.filter(price_lt=40)
         elif price_range == '40 - 59':
-            product_results = product_results.filter(price__gte=40)
-            product_results = product_results.filter(price__lt=60)
+            product_results = product_results.filter(price_gte=40)
+            product_results = product_results.filter(price_lt=60)
         elif price_range == '60 - 79':
-            product_results = product_results.filter(price__gte=60)
-            product_results = product_results.filter(price__lt=80)
+            product_results = product_results.filter(price_gte=60)
+            product_results = product_results.filter(price_lt=80)
         elif price_range == 'More than 80':
-            product_results = product_results.filter(price__gte=80)
+            product_results = product_results.filter(price_gte=80)
 
         if order == 'desc':
             sort_by = '-' + sort_by

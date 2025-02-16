@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 
 // Pages
@@ -11,6 +11,7 @@ import Home from "./containers/Home";
 import Shop from "./containers/Shop";
 import ResetPasswordConfirm from "./containers/auth/ResetPasswordConfirm";
 import ProductDetail from "./containers/pages/ProductDetail";
+import SearchPage from "./containers/pages/SearchPage";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
 
         <Route exact path="/shop" element={<Shop />} />
         <Route exact path="/product/:productId" element={<ProductDetail />} />
+        <Route exact path="/search" element={<SearchPage />} />
         
       </Routes>
     </BrowserRouter>

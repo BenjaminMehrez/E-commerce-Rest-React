@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import Layout from "../hocs/Layout";
+import Layout from "../../hocs/Layout";
 import { connect } from "react-redux";
-import { get_categories } from "../redux/actions/categories";
-import { get_products, get_filtered_products } from "../redux/actions/products";
+import { get_categories } from "../../redux/actions/categories";
+import {
+  get_products,
+  get_filtered_products,
+} from "../../redux/actions/products";
 
-import { prices } from "../helpers/fixedPrices";
+import { prices } from "../../helpers/fixedPrices";
 
 import {
   Dialog,
@@ -14,15 +17,15 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { FunnelIcon, MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
-import ProductCard from "../components/product/ProductCard";
+import ProductCard from "../../components/product/ProductCard";
 
-function Shop({
+function SearchPage({
   get_categories,
   categories,
   get_products,
   products,
   get_filtered_products,
-  filtered_products,
+  searched_products,
 }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filtered, setFiltered] = useState(false);
@@ -30,7 +33,7 @@ function Shop({
     category_id: "0",
     price_range: "Any",
     sortBy: "created",
-    order: "asc",
+    order: "desc",
   });
 
   const { category_id, price_range, sortBy, order } = formData;
@@ -56,31 +59,18 @@ function Shop({
     let display = [];
 
     if (
-      filtered_products &&
-      filtered_products !== null &&
-      filtered_products !== undefined &&
-      filtered
+      searched_products &&
+      searched_products !== null &&
+      searched_products !== undefined
     ) {
-      filtered_products.map((product) => {
-        return display.push(<ProductCard key={product.id} product={product} />);
-      });
-    } else if (
-      !filtered &&
-      products &&
-      products !== null &&
-      products !== undefined
-    ) {
-      products.map((product) => {
+      searched_products.map((product) => {
         return display.push(<ProductCard key={product.id} product={product} />);
       });
     }
 
     for (let i = 0; i < display.length; i += 3) {
       results.push(
-        <div
-          key={i}
-          className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8"
-        >
+        <div key={i} className="grid md:grid-cols-3 ">
           {display[i] ? display[i] : <div className=""></div>}
           {display[i + 1] ? display[i + 1] : <div className=""></div>}
           {display[i + 2] ? display[i + 2] : <div className=""></div>}
@@ -355,7 +345,7 @@ function Shop({
           <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex items-baseline justify-between border-b border-gray-200 pt-24 pb-6">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-                Lo Nuevo
+                Productos encontrados
               </h1>
 
               <div className="flex items-center">
@@ -615,11 +605,11 @@ function Shop({
 const mapStateToProps = (state) => ({
   categories: state.counter.Categories.categories,
   products: state.counter.Products.products,
-  filtered_products: state.counter.Products.filtered_products,
+  searched_products: state.counter.Products.search_products,
 });
 
 export default connect(mapStateToProps, {
   get_categories,
   get_products,
   get_filtered_products,
-})(Shop);
+})(SearchPage);

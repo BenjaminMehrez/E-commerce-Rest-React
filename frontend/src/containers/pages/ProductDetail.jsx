@@ -10,6 +10,7 @@ import ImageGallery from "../../components/product/ImageGallery";
 
 function ProductDetail({ get_related_products, get_product, product }) {
   useEffect(() => {
+    window.scrollTo(0, 0);
     get_product(productId);
     get_related_products(productId);
   }, []);
