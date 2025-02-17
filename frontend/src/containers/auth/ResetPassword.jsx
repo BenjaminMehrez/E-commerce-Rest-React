@@ -13,17 +13,18 @@ const ResetPassword = () => {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (loading) {
+      navigate("/");
+    }
+  }, [loading, navigate]);
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(reset_password(email));
   };
 
-  if (!loading) {
-    return navigate("/");
-  }
+
 
   return (
     <Layout>

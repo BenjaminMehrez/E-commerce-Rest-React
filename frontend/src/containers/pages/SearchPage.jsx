@@ -25,6 +25,7 @@ function SearchPage({
   get_products,
   products,
   get_filtered_products,
+  filtered_products,
   searched_products,
 }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -58,7 +59,17 @@ function SearchPage({
     let results = [];
     let display = [];
 
+
     if (
+      filtered_products &&
+      filtered_products !== null &&
+      filtered_products !== undefined &&
+      filtered
+    ) {
+      filtered_products.map((product) => {
+        return display.push(<ProductCard key={product.id} product={product} />);
+      });
+    } else if (
       searched_products &&
       searched_products !== null &&
       searched_products !== undefined
@@ -345,7 +356,7 @@ function SearchPage({
           <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex items-baseline justify-between border-b border-gray-200 pt-24 pb-6">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-                Productos encontrados
+                Productos encontrados { searched_products && searched_products !== null && searched_products !== undefined && searched_products.length} 
               </h1>
 
               <div className="flex items-center">
@@ -606,6 +617,7 @@ const mapStateToProps = (state) => ({
   categories: state.counter.Categories.categories,
   products: state.counter.Products.products,
   searched_products: state.counter.Products.search_products,
+  filtered_products: state.counter.Products.filtered_products,
 });
 
 export default connect(mapStateToProps, {

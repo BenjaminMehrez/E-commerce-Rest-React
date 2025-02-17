@@ -36,7 +36,7 @@ function ResetPasswordConfirm({ reset_password_confirm, loading }) {
   };
 
   useEffect(() => {
-    if (requestSent && !loading) {
+    if (requestSent && loading) {
       navigate("/");
     }
   }, [requestSent, loading, navigate]);
@@ -107,7 +107,7 @@ function ResetPasswordConfirm({ reset_password_confirm, loading }) {
 }
 
 const mapStateToProps = (state) => ({
-  loading: state.Auth.loading,
+  loading: state.counter.Auth.loading,
 });
 
 export default connect(mapStateToProps, { reset_password_confirm })(ResetPasswordConfirm);
