@@ -10,7 +10,7 @@ function ProductsSold({ data }) {
           </h2>
           <Link
             style={{ color: "#0B0000" }}
-            to="#"
+            to="/shop"
             className="hidden text-sm font-semibold sm:block hover:underline"
           >
             Explora todos los produtos<span aria-hidden="true"> &rarr;</span>
@@ -30,7 +30,7 @@ function ProductsSold({ data }) {
                   />
                 </div>
                 <h3 className="mt-4 text-base font-semibold text-gray-900">
-                  <Link to="/">
+                  <Link to={`/product/${product.id}`}>
                     <span className="absolute inset-0" />
                     {product.name}
                   </Link>
@@ -42,7 +42,7 @@ function ProductsSold({ data }) {
 
         <div className="mt-6 sm:hidden">
           <Link
-            to="#"
+            to='/shop'
             className="block text-sm font-semibold text-indigo-600 hover:text-indigo-500"
           >
             Browse all favorites<span aria-hidden="true"> &rarr;</span>

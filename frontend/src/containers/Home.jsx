@@ -1,44 +1,38 @@
-import Layout from "../hocs/Layout"
-import { connect } from 'react-redux';
-import { 
-    get_products_by_arrival, 
-    get_products_by_sold 
-} from '../redux/actions/products';
 import { useEffect } from "react";
-import Banner from '../components/home/Banner'
-import ProductsArrival from '../components/home/ProductsArrival'
-import ProductsSold from '../components/home/ProductsSold'
-const Home = ({
-    get_products_by_arrival, 
-    get_products_by_sold,
-    products_arrival,
-    products_sold
-}) => {
+import { useDispatch, useSelector } from "react-redux";
+import {
+  get_products_by_arrival,
+  get_products_by_sold,
+} from "../redux/actions/products";
+import Layout from "../hocs/Layout";
+import Banner from "../components/home/Banner";
+import ProductsArrival from "../components/home/ProductsArrival";
+import ProductsSold from "../components/home/ProductsSold";
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
+const Home = () => {
+  const dispatch = useDispatch();
 
-        get_products_by_arrival();
-        get_products_by_sold();
-    }, []);
+  const products_arrival = useSelector(
+    (state) => state.counter.Products.products_arrival
+  );
+  const products_sold = useSelector(
+    (state) => state.counter.Products.products_sold
+  );
 
-    return(
-        <Layout>
-            <div className="text-blue-500">
-                <Banner/>
-                <ProductsArrival data={products_arrival}/>
-                <ProductsSold data={products_sold}/>
-            </div>
-        </Layout>
-    )
-}
+  useEffect(() => {
+    dispatch(get_products_by_arrival());
+    dispatch(get_products_by_sold());
+  }, [dispatch]);
 
-const mapStateToProps = state => ({
-    products_arrival: state.counter.Products.products_arrival,
-    products_sold: state.counter.Products.products_sold,
-})
+  return (
+    <Layout>
+      <div className="text-blue-500">
+        <Banner />
+        {products_arrival && <ProductsArrival data={products_arrival} />}
+        {products_sold && <ProductsSold data={products_sold} />}
+      </div>
+    </Layout>
+  );
+};
 
-export default connect(mapStateToProps,{
-    get_products_by_arrival, 
-    get_products_by_sold,
-}) (Home)
+export default Home;

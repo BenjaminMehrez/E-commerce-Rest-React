@@ -1,31 +1,31 @@
 import { useEffect, useState } from "react";
-import Layout from "../../hocs/Layout";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../redux/actions/auth";
+import Layout from "../../hocs/Layout";
 import ClipLoader from "react-spinners/ClipLoader";
 
-function Login({ login, loading }) {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const loading = useSelector((state) => state.counter.Auth.loading);
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const { email, password } = formData;
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-  const onChange = (e) => {
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    login(email, password);
-    console.log(formData);
-    window.scrollTo(0, 0);
+    dispatch(login(formData.email, formData.password));
   };
 
   return (
@@ -38,10 +38,10 @@ function Login({ login, loading }) {
               src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
               className="mx-auto h-10 w-auto"
             />
-            <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-              Sign up
+            <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
+              Sign in
             </h2>
-            <p className="mt-2 text-center text-sm/6 text-gray-600">
+            <p className="mt-2 text-center text-sm text-gray-600">
               Or{" "}
               <Link
                 to="/signup"
@@ -53,69 +53,57 @@ function Login({ login, loading }) {
           </div>
 
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form onSubmit={(e) => onSubmit(e)} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
+                <label className="block text-sm font-medium text-gray-900">
                   Email address
                 </label>
                 <div className="mt-2">
                   <input
-                    value={email}
-                    onChange={(e) => onChange(e)}
+                    value={formData.email}
+                    onChange={handleChange}
                     name="email"
                     type="email"
                     required
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm/6 font-medium text-gray-900"
-                  >
-                    Password
-                  </label>
-                </div>
+                <label className="block text-sm font-medium text-gray-900">
+                  Password
+                </label>
                 <div className="mt-2">
                   <input
-                    value={password}
-                    onChange={(e) => onChange(e)}
+                    value={formData.password}
+                    onChange={handleChange}
                     name="password"
                     type="password"
                     required
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm"
                   />
                 </div>
               </div>
 
               <div className="text-sm">
-                <Link to="/reset_password" className="font-medium text-indigo-600">
+                <Link
+                  to="/reset_password"
+                  className="font-medium text-indigo-600"
+                >
                   Forgot your password?
                 </Link>
-
               </div>
 
               <div>
                 {loading ? (
-                  <button className="items-center bg-violet-800 text-white p-4 rounded ">
-                    <ClipLoader
-                      color="white"
-                      loading={true}
-                      size={20}
-                      aria-label="Loading Spinner"
-                      data-testid="loader"
-                    />
+                  <button className="w-full flex justify-center bg-violet-800 text-white p-4 rounded">
+                    <ClipLoader color="white" loading={true} size={20} />
                   </button>
                 ) : (
                   <button
                     type="submit"
-                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="w-full flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-indigo-600"
                   >
                     Login
                   </button>
@@ -127,12 +115,6 @@ function Login({ login, loading }) {
       </div>
     </Layout>
   );
-}
+};
 
-const mapStateToProps = (state) => ({
-  loading: state.counter.Auth.loading,
-});
-
-export default connect(mapStateToProps, {
-  login,
-})(Login);
+export default Login;

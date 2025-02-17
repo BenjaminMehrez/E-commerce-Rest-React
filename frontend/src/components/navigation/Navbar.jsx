@@ -1,6 +1,6 @@
-import { Link, Navigate, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Fragment, useEffect, useState } from "react";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Menu } from "@headlessui/react";
 import { connect } from "react-redux";
 import { logout } from "../../redux/actions/auth";
 import { get_categories } from "../../redux/actions/categories";
@@ -12,21 +12,14 @@ function Navbar({
   isAuthenticated,
   logout,
   get_categories,
-  categories,
   get_search_products,
 }) {
-  const [redirect, setRedirect] = useState(false);
-  const [render, setRender] = useState(false);
-  const [formData, setFormData] = useState({
-    category_id: "0",
-    search: "",
-  });
-
-  const { category_id, search } = formData;
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ category_id: "0", search: "" });
 
   useEffect(() => {
     get_categories();
-  }, []);
+  }, []); // Se ejecuta solo una vez
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,23 +27,16 @@ function Navbar({
 
   const onSubmit = (e) => {
     e.preventDefault();
-    get_search_products(search, category_id);    
-    setRender(!render);
+    get_search_products(formData.search, formData.category_id);
+    navigate("/search");
   };
-
-  if (render) {
-    return <Navigate to="/search" />;
-  }
 
   const handleLogout = () => {
     logout();
-    setRedirect(true);
+    navigate("/");
+    window.location.reload();
   };
 
-  if (redirect){
-    window.location.reload(false)
-    return <Navigate to='/' />;
-  }
   return (
     <header
       className="sticky top-0 z-50 text-white shadow-md"
@@ -64,7 +50,7 @@ function Navbar({
           </Link>
 
           <SearchBox
-            search={search}
+            search={formData.search}
             onChange={onChange}
             onSubmit={onSubmit}
           />
@@ -91,7 +77,7 @@ function Navbar({
 
 const UserMenu = ({ handleLogout }) => (
   <Menu as="div" className="relative">
-    <MenuButton className="flex items-center gap-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50">
+    <Menu.Button className="flex items-center gap-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50">
       <span className="inline-block h-10 w-10 rounded-full bg-gray-100 overflow-hidden">
         <svg
           className="h-full w-full text-gray-300"
@@ -101,11 +87,11 @@ const UserMenu = ({ handleLogout }) => (
           <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
       </span>
-    </MenuButton>
+    </Menu.Button>
 
-    <MenuItems className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
+    <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white text-black shadow-lg ring-1 ring-black/5">
       <div className="py-1">
-        <MenuItem>
+        <Menu.Item>
           {({ active }) => (
             <Link
               to="/account"
@@ -116,8 +102,8 @@ const UserMenu = ({ handleLogout }) => (
               Account Settings
             </Link>
           )}
-        </MenuItem>
-        <MenuItem>
+        </Menu.Item>
+        <Menu.Item>
           {({ active }) => (
             <button
               onClick={handleLogout}
@@ -128,9 +114,9 @@ const UserMenu = ({ handleLogout }) => (
               Log out
             </button>
           )}
-        </MenuItem>
+        </Menu.Item>
       </div>
-    </MenuItems>
+    </Menu.Items>
   </Menu>
 );
 

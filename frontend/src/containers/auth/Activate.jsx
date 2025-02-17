@@ -1,24 +1,26 @@
-import { Navigate, useParams } from "react-router-dom";
-import Layout from "../../hocs/Layout";
-import { useState } from "react";
-import { connect } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { activate } from "../../redux/actions/auth";
+import Layout from "../../hocs/Layout";
 import ClipLoader from "react-spinners/ClipLoader";
 
-const Activate = ({ activate, loading }) => {
-  const [activated, setActivated] = useState(false);
-  const params = useParams();
+const Activate = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { uid, token } = useParams();
+  const loading = useSelector((state) => state.counter.Auth.loading);
+  const isActivated = useSelector((state) => state.counter.Auth.isActivated); // Asegúrate de tener un estado isActivated en Redux
+
+  useEffect(() => {
+    if (isActivated) {
+      navigate("/"); // Redirige a home cuando la cuenta se haya activado
+    }
+  }, [isActivated, navigate]);
 
   const activateAccount = () => {
-    const uid = params.uid;
-    const token = params.token;
-    activate(uid, token);
-    setActivated(true);
+    dispatch(activate(uid, token));
   };
-
-  if (activated && !loading) {
-    return <Navigate to="/" />;
-  }
 
   return (
     <Layout>
@@ -26,11 +28,7 @@ const Activate = ({ activate, loading }) => {
         <div className="max-w-3xl mx-auto">
           {loading ? (
             <button className="items-center bg-violet-800 text-white p-4 rounded w-40 h-14">
-              <ClipLoader
-                color="white" loading={true} size={20}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
+              <ClipLoader color="white" loading={true} size={20} />
             </button>
           ) : (
             <button
@@ -46,10 +44,4 @@ const Activate = ({ activate, loading }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  loading: state.counter.Auth.loading,
-});
-
-export default connect(mapStateToProps, {
-  activate,
-})(Activate);
+export default Activate;
