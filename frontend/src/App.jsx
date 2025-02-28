@@ -12,6 +12,7 @@ import Shop from "./containers/Shop";
 import ResetPasswordConfirm from "./containers/auth/ResetPasswordConfirm";
 import ProductDetail from "./containers/pages/ProductDetail";
 import SearchPage from "./containers/pages/SearchPage";
+import Cart from "./containers/pages/Cart";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path="*" element={<Error404 />} />
         <Route exact path="/" element={<Home />} />
+        <Route exact path="/cart" element={<Cart />} />
 
         {/* Authentication */}
         <Route exact path="/signup" element={<Signup />} />

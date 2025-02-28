@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu } from "@headlessui/react";
 import { connect } from "react-redux";
 import { logout } from "../../redux/actions/auth";
@@ -7,12 +7,14 @@ import { get_categories } from "../../redux/actions/categories";
 import { get_search_products } from "../../redux/actions/products";
 import Alert from "../../components/Alert";
 import SearchBox from "./SearchBox";
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 
 function Navbar({
   isAuthenticated,
   logout,
   get_categories,
   get_search_products,
+  total_items
 }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ category_id: "0", search: "" });
@@ -43,11 +45,15 @@ function Navbar({
       style={{ backgroundColor: "#0B0000" }}
     >
       <nav className="container mx-auto flex h-full items-center justify-between px-6">
-        <div className="flex items-center">
+        <div className="flex items-center gap-10">
           {/* Logo */}
           <Link to="/">
             <img src="/logo.webp" alt="Logo" className="w-20" />
           </Link>
+
+          <NavLink to="/shop" className="hover:text-gray-300 font-semibold">
+            Productos
+          </NavLink>
 
           <SearchBox
             search={formData.search}
@@ -57,18 +63,17 @@ function Navbar({
         </div>
 
         {/* Navigation Links */}
-        <ul className="flex items-center gap-6">
-          <li>
-            <NavLink to="/shop" className="hover:text-gray-300 font-semibold">
-              Productos
-            </NavLink>
-          </li>
+        <div className="flex items-center gap-6">
+          <Link to="/cart" className="hover:text-gray-300 cursor-pointer">
+            <ShoppingCartIcon className="w-6" />
+            <span className="text-xs absolute top-1 mt-3 ml-4 bg-white text-black font-semibold rounded-full px-2 text-center">{total_items}</span>
+          </Link>
           {isAuthenticated ? (
             <UserMenu handleLogout={handleLogout} />
           ) : (
             <GuestLinks />
           )}
-        </ul>
+        </div>
       </nav>
       <Alert />
     </header>
@@ -121,23 +126,21 @@ const UserMenu = ({ handleLogout }) => (
 );
 
 const GuestLinks = () => (
-  <Fragment>
-    <li>
-      <Link to="/login" className="hover:text-gray-300 font-semibold">
-        Iniciar Sesion
-      </Link>
-    </li>
-    <li>
-      <Link to="/signup" className="hover:text-gray-300 font-semibold">
-        Registrate
-      </Link>
-    </li>
-  </Fragment>
+  <>
+    <Link to="/login" className="hover:text-gray-300 font-semibold">
+      Iniciar Sesion
+    </Link>
+    <Link to="/signup" className="hover:text-gray-300 font-semibold">
+      Registrate
+    </Link>
+  </>
 );
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.counter.Auth.isAuthenticated,
+  user: state.counter.Auth.user,
   categories: state.counter.Categories.categories,
+  total_items: state.counter.Cart.total_items,
 });
 
 export default connect(mapStateToProps, {

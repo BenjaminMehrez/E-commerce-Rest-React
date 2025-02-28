@@ -31,14 +31,12 @@ export const add_item = (product) => async (dispatch) => {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: "JWT " + localStorage.getItem("access"),
+        Authorization: `JWT ${localStorage.getItem("access")}`,
       },
     };
 
     const product_id = product.id;
-    const body = JSON.stringify({
-      product_id,
-    });
+    const body = JSON.stringify({ product_id });
 
     try {
       const res = await axios.post(
@@ -57,7 +55,7 @@ export const add_item = (product) => async (dispatch) => {
           type: ADD_ITEM_FAIL,
         });
       }
-    } catch (error) {
+    } catch (err) {
       dispatch({
         type: ADD_ITEM_FAIL,
       });
@@ -98,7 +96,7 @@ export const get_items = () => async (dispatch) => {
     const config = {
       headers: {
         Accept: "application/json",
-        Authorization: "JWT " + localStorage.getItem("access"),
+        Authorization: `JWT ${localStorage.getItem("access")}`,
       },
     };
 
@@ -118,14 +116,14 @@ export const get_items = () => async (dispatch) => {
           type: GET_ITEMS_FAIL,
         });
       }
-    } catch (error) {
+    } catch (err) {
       dispatch({
         type: GET_ITEMS_FAIL,
       });
     }
   } else {
     dispatch({
-      type: GET_ITEMS_FAIL,
+      type: GET_ITEMS,
     });
   }
 };
@@ -135,7 +133,7 @@ export const get_total = () => async (dispatch) => {
     const config = {
       headers: {
         Accept: "application/json",
-        Authorization: "JWT " + localStorage.getItem("access"),
+        Authorization: `JWT ${localStorage.getItem("access")}`,
       },
     };
 
@@ -155,7 +153,7 @@ export const get_total = () => async (dispatch) => {
           type: GET_TOTAL_FAIL,
         });
       }
-    } catch (error) {
+    } catch (err) {
       dispatch({
         type: GET_TOTAL_FAIL,
       });
@@ -171,7 +169,7 @@ export const get_total = () => async (dispatch) => {
       cart.map((item) => {
         total += parseFloat(item.product.price) * parseFloat(item.count);
         compare_total +=
-          parseFloat(item.product.compare_total) * parseFloat(item.count);
+          parseFloat(item.product.compare_price) * parseFloat(item.count);
       });
     }
 
@@ -190,7 +188,7 @@ export const get_item_total = () => async (dispatch) => {
     const config = {
       headers: {
         Accept: "application/json",
-        Authorization: "JWT " + localStorage.getItem("access"),
+        Authorization: `JWT ${localStorage.getItem("access")}`,
       },
     };
 
@@ -210,7 +208,7 @@ export const get_item_total = () => async (dispatch) => {
           type: GET_ITEM_TOTAL_FAIL,
         });
       }
-    } catch (error) {
+    } catch (err) {
       dispatch({
         type: GET_ITEM_TOTAL_FAIL,
       });
@@ -233,17 +231,14 @@ export const update_item = (item, count) => async (dispatch) => {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
-        Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "JWT " + localStorage.getItem("access"),
+        Accept: "application/json",
+        Authorization: `JWT ${localStorage.getItem("access")}`,
       },
     };
 
     const product_id = item.product.id;
-    const body = JSON.stringify({
-      product_id,
-      count,
-    });
+    const body = JSON.stringify({ product_id, count });
 
     try {
       const res = await axios.put(
@@ -262,7 +257,7 @@ export const update_item = (item, count) => async (dispatch) => {
           type: UPDATE_ITEM_FAIL,
         });
       }
-    } catch (error) {
+    } catch (err) {
       dispatch({
         type: UPDATE_ITEM_FAIL,
       });
@@ -281,7 +276,7 @@ export const update_item = (item, count) => async (dispatch) => {
     }
 
     dispatch({
-      type: UPDATE_ITEM_SUCCESS,
+      type: UPDATE_ITEM,
       payload: cart,
     });
   }
@@ -294,9 +289,9 @@ export const remove_item = (item) => async (dispatch) => {
 
     const config = {
       headers: {
-        Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "JWT " + localStorage.getItem("access"),
+        Accept: "application/json",
+        Authorization: `JWT ${localStorage.getItem("access")}`,
       },
       data: body,
     };
@@ -317,7 +312,7 @@ export const remove_item = (item) => async (dispatch) => {
           type: REMOVE_ITEM_FAIL,
         });
       }
-    } catch (error) {
+    } catch (err) {
       dispatch({
         type: REMOVE_ITEM_FAIL,
       });
@@ -337,7 +332,7 @@ export const remove_item = (item) => async (dispatch) => {
     }
 
     dispatch({
-      type: REMOVE_ITEM_SUCCESS,
+      type: REMOVE_ITEM,
       payload: new_cart,
     });
   }
@@ -348,7 +343,7 @@ export const empty_cart = () => async (dispatch) => {
     const config = {
       headers: {
         Accept: "application/json",
-        Authorization: "JWT " + localStorage.getItem("access"),
+        Authorization: `JWT ${localStorage.getItem("access")}`,
       },
     };
 
@@ -361,66 +356,67 @@ export const empty_cart = () => async (dispatch) => {
       if (res.status === 200) {
         dispatch({
           type: EMPTY_CART_SUCCESS,
-        })
+        });
       } else {
         dispatch({
           type: EMPTY_CART_FAIL,
         });
       }
-    } catch (error) {
+    } catch (err) {
       dispatch({
         type: EMPTY_CART_FAIL,
       });
     }
   } else {
     dispatch({
-      type: EMPTY_CART_FAIL,
+      type: EMPTY_CART,
     });
   }
 };
 
-
-export const synch_cart = () => async dispatch => {
+export const synch_cart = () => async (dispatch) => {
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'JWT ' + localStorage.getItem('access')
-    }
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `JWT ${localStorage.getItem("access")}`,
+    },
+  };
+
+  let cart_items = [];
+
+  if (localStorage.getItem("cart")) {
+    let cart = JSON.parse(localStorage.getItem("cart"));
+
+    cart.map((cart_item) => {
+      const item = {};
+      item.product_id = cart_item.product.id;
+      item.count = cart_item.count;
+      cart_items.push(item);
+    });
   }
 
-  let cart_items = []
-
-  if(localStorage.getItem('cart')) {
-    let cart = JSON.parse(localStorage.getItem('cart'))
-
-    cart.map(cart_item => {
-      const item = {}
-      item.product_id = cart_item.product.id
-      item.count = cart_item.count
-      cart_item.push(item)
-    })
-  }
-
-  const body = JSON.stringify({
-    cart_items
-  })
+  const body = JSON.stringify({ cart_items });
 
   try {
-    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/cart/synch`, body, config)
-    
-    if (res.status === 201 ) {
+    const res = await axios.put(
+      `${import.meta.env.VITE_API_URL}/api/cart/synch`,
+      body,
+      config
+    );
+
+    if (res.status === 201) {
       dispatch({
-        type: SYNCH_CART_SUCCESS
-      })
+        type: SYNCH_CART_SUCCESS,
+      });
     } else {
       dispatch({
-        type: SYNCH_CART_FAIL
-      })
+        type: SYNCH_CART_FAIL,
+      });
     }
-  } catch (error) {
+  } catch (err) {
     dispatch({
-      type: SYNCH_CART_FAIL
-    })
+      type: SYNCH_CART_FAIL,
+    });
   }
-}
+};
