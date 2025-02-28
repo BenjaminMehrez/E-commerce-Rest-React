@@ -9,6 +9,13 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loading = useSelector((state) => state.counter.Auth.loading);
+  const isAuthenticated = useSelector((state) => state.counter.Auth.isAuthenticated);
+
+  useEffect(() => {
+    if(isAuthenticated) {
+      navigate('/')
+  }
+  }, [isAuthenticated, navigate]);
 
   const [formData, setFormData] = useState({
     email: "",

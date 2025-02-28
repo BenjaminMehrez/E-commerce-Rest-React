@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { signup } from "../../redux/actions/auth";
 import Layout from "../../hocs/Layout";
 
 function Signup({ signup }) {
   const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.counter.Auth.isAuthenticated);
+
+  useEffect(() => {
+    if(isAuthenticated) {
+      navigate('/')
+  }
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
