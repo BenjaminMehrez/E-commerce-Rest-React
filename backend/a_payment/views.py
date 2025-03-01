@@ -83,7 +83,7 @@ class GetPaymentTotalView(APIView):
 
                 shipping_cost = 0.0
 
-                if Shipping.objects.filter(id__isexact=shipping_id).exists():
+                if Shipping.objects.filter(id__iexact=shipping_id).exists():
 
                     shipping = Shipping.objects.get(id=shipping_id)
                     shipping_cost = shipping.price
@@ -91,11 +91,12 @@ class GetPaymentTotalView(APIView):
 
                 total_amount = round(total_amount, 2)
 
-                return Response(
-                    {'original_price': f'{original_price:.2f}',
-                     'total_amount': f'{total_amount:.2f}',
-                     'total_compare_amount': f'{total_compare_amount:.2f}',
-                     'shipping_cost': f'{shipping_cost:.2f}', },
+                return Response({
+                    'original_price': f'{original_price:.2f}',
+                    'total_compare_amount': f'{total_compare_amount:.2f}',
+                    'shipping_cost': f'{shipping_cost:.2f}',
+                    'total_amount': f'{total_amount:.2f}',
+                },
                     status=status.HTTP_200_OK
                 )
 
