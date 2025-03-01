@@ -66,7 +66,7 @@ function Checkout({
   useEffect(() => {
     window.scrollTo(0, 0);
     get_shipping_options();
-  });
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated) {

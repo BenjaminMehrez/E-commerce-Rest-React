@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/product/', include('a_product.urls')),
     path('api/cart/', include('a_ecart.urls')),
     path('api/shipping/', include('a_shipping.urls')),
+    path('api/order/', include('a_order.urls')),
     
     path('admin/', admin.site.urls),
 ]
