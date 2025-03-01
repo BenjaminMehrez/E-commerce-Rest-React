@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'a_product',
     'a_ecart',
     'a_shipping',
-    'a_order'
+    'a_order',
+    'a_payment',
 ]
 
 
@@ -218,6 +219,11 @@ DJOSER = {
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
     },
 }
+
+BT_ENVIRONMENT=env('BT_ENVIRONMENT')
+BT_MERCHANT_ID=env('BT_MERCHANT_ID')
+BT_PUBLIC_KEY=env('BT_PUBLIC_KEY')
+BT_PRIVATE_KEY=env('BT_PRIVATE_KEY')
 
 
 AUTH_USER_MODEL = 'a_user.UserAccount'
