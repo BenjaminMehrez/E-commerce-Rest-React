@@ -2,66 +2,77 @@ import { useEffect } from "react";
 import Layout from "../../hocs/Layout";
 import CartItem from "../../components/cart/CartItem";
 import { setAlert } from "../../redux/actions/alert";
+import { refresh } from "../../redux/actions/auth";
 import { get_shipping_options } from "../../redux/actions/shipping";
-
+import {
+  get_payment_total,
+  get_client_token,
+  process_payment,
+} from "../../redux/actions/payment";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  remove_item,
-  update_item,
-  get_items,
-  get_total,
-  get_item_total,
-} from "../../redux/actions/cart";
+import { remove_item, update_item } from "../../redux/actions/cart";
 import { useState } from "react";
+import ShippingForm from "../../components/ckeckout/ShippingForm";
+
+import DropIn from "braintree-web-drop-in-react";
+import { ClipLoader } from "react-spinners";
 
 function Checkout({
-  get_items,
-  get_total,
-  get_item_total,
   isAuthenticated,
   items,
-  amount,
-  compare_amount,
-  total_items,
-  remove_item,
   update_item,
+  remove_item,
   setAlert,
   get_shipping_options,
   shipping,
+  refresh,
+  get_payment_total,
+  get_client_token,
+  process_payment,
+  user,
+  total_items,
+  clientToken,
+  made_payment,
+  loading,
+  original_price,
+  total_amount,
+  total_compare_amount,
+  shipping_cost,
 }) {
   const navigate = useNavigate();
   const [render, setRender] = useState(false);
 
   const [formData, setFormData] = useState({
     full_name: "",
-    address_line1: "",
-    address_line2: "",
+    address_line_1: "",
+    address_line_2: "",
     city: "",
     state_province_region: "",
     postal_code: "",
     country: "Argentina",
     telephone_number: "",
-    coupon_name: "",
     shipping_id: 0,
+  });
+
+  const [data, setData] = useState({
+    instance: {},
   });
 
   const {
     full_name,
-    address_line1,
-    address_line2,
+    address_line_1,
+    address_line_2,
     city,
     state_province_region,
     postal_code,
     country,
     telephone_number,
-    coupon_name,
     shipping_id,
   } = formData;
 
-  const onChange = (e) => {
+  const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -69,10 +80,52 @@ function Checkout({
   }, []);
 
   useEffect(() => {
+    get_client_token();
+  }, [user]);
+
+  useEffect(() => {
+    get_payment_total(shipping_id, "");
+  }, [shipping_id]);
+
+  useEffect(() => {
     if (!isAuthenticated) {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
+
+  const buy = async (e) => {
+    e.preventDefault();
+    let nonce = await data.instance.requestPaymentMethod();
+    if (coupon && coupon !== null && coupon !== undefined) {
+      process_payment(
+        nonce,
+        shipping_id,
+        coupon.name,
+        full_name,
+        address_line_1,
+        address_line_2,
+        city,
+        state_province_region,
+        postal_code,
+        country,
+        telephone_number
+      );
+    } else {
+      process_payment(
+        nonce,
+        shipping_id,
+        "",
+        full_name,
+        address_line_1,
+        address_line_2,
+        city,
+        state_province_region,
+        postal_code,
+        country,
+        telephone_number
+      );
+    }
+  };
 
   const showItems = () => {
     return (
@@ -104,9 +157,9 @@ function Checkout({
   const renderShipping = () => {
     if (shipping && shipping !== null && shipping !== undefined) {
       return (
-        <div className="">
+        <div className="py-3 border-b border-gray-200">
           {shipping.map((shipping_option) => (
-            <div key={shipping_option.id}>
+            <div key={shipping_option.id} className="py-1">
               <label className="flex gap-2">
                 <input
                   onChange={(e) => onChange(e)}
@@ -115,12 +168,56 @@ function Checkout({
                   type="radio"
                   required
                 />
-                {shipping_option.name} - ${shipping_option.price} (
-                {shipping_option.time_to_delivery})
+                {shipping_option.name}
               </label>
             </div>
           ))}
         </div>
+      );
+    }
+  };
+
+  const renderPaymentInfo = () => {
+    if (!clientToken) {
+      if (!isAuthenticated) {
+        <Link
+          to="/login"
+          className="w-full bg-gray-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-gray-500"
+        >
+          Login
+        </Link>;
+      } else {
+        <button className="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">
+          <Loader type="Oval" color="#fff" height={20} widht={20} />
+        </button>;
+      }
+    } else {
+      return (
+        <>
+          <DropIn
+            options={{
+              authorization: clientToken,
+              paypal: {
+                flow: "vault",
+              },
+            }}
+            onInstance={(instance) => (data.instance = instance)}
+          />
+          <div className="mt-6">
+            {loading ? (
+              <button className="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">
+                <Loader type="Oval" color="#fff" height={20} widht={20} />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="w-full bg-green-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-green-500"
+              >
+                Place Order
+              </button>
+            )}
+          </div>
+        </>
       );
     }
   };
@@ -140,12 +237,26 @@ function Checkout({
             </section>
 
             {/* Order summary */}
-            <section
-              aria-labelledby="summary-heading"
-              className="mt-16 bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-5"
-            >
-              {renderShipping()}
-            </section>
+            <ShippingForm
+              full_name={full_name}
+              address_line_1={address_line_1}
+              address_line_2={address_line_2}
+              city={city}
+              state_province_region={state_province_region}
+              postal_code={postal_code}
+              telephone_number={telephone_number}
+              country={country}
+              onChange={onChange}
+              buy={buy}
+              user={user}
+              renderShipping={renderShipping}
+              total_amount={total_amount}
+              total_compare_amount={total_compare_amount}
+              shipping_cost={shipping_cost}
+              shipping_id={shipping_id}
+              shipping={shipping}
+              renderPaymentInfo={renderPaymentInfo}
+            />
           </div>
         </div>
       </div>
@@ -155,19 +266,26 @@ function Checkout({
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.counter.Auth.isAuthenticated,
+  user: state.counter.Auth.user,
   items: state.counter.Cart.items,
-  amount: state.counter.Cart.amount,
-  compare_amount: state.counter.Cart.compare_amount,
   total_items: state.counter.Cart.total_items,
   shipping: state.counter.Shipping.shipping,
+  clientToken: state.counter.Payment.clientToken,
+  made_payment: state.counter.Payment.made_payment,
+  loading: state.counter.Payment.loading,
+  original_price: state.counter.Payment.original_price,
+  total_amount: state.counter.Payment.total_amount,
+  total_compare_amount: state.counter.Payment.total_compare_amount,
+  shipping_cost: state.counter.Payment.shipping_cost,
 });
 
 export default connect(mapStateToProps, {
-  get_items,
-  get_total,
-  get_item_total,
   remove_item,
   update_item,
   setAlert,
   get_shipping_options,
+  refresh,
+  get_payment_total,
+  get_client_token,
+  process_payment,
 })(Checkout);
