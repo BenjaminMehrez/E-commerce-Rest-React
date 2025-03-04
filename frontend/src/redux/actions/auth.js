@@ -94,6 +94,9 @@ export const signup =
           type: SIGNUP_SUCCESS,
           payload: res.data,
         });
+        dispatch({
+          type: REMOVE_AUTH_LOADING,
+        });
         dispatch(
           setAlert("Te enviamos un correo, por favor activa tu cuenta", "green")
         );
@@ -101,11 +104,11 @@ export const signup =
         dispatch({
           type: SIGNUP_FAIL,
         });
+        dispatch({
+          type: REMOVE_AUTH_LOADING,
+        });
         dispatch(setAlert("Error al crear cuenta", "red"));
       }
-      dispatch({
-        type: REMOVE_AUTH_LOADING,
-      });
     } catch (error) {
       dispatch({
         type: SIGNUP_FAIL,
@@ -113,9 +116,58 @@ export const signup =
       dispatch({
         type: REMOVE_AUTH_LOADING,
       });
-      dispatch(
-        setAlert("Error conectando con el servidor, intenta mas tarde", "red")
-      );
+
+      if (error.response) {
+        const errorData = error.response.data;
+
+        // Si el error viene en email
+        if (errorData.email) {
+          let errorMsg = errorData.email[0];
+
+          if (
+            errorMsg.includes("user account with this email already exists")
+          ) {
+            errorMsg = "Este correo ya está registrado. Intenta con otro.";
+          } else if (errorMsg.includes("Enter a valid email address")) {
+            errorMsg = "Por favor, ingresa un correo válido.";
+          }
+
+          dispatch(setAlert(errorMsg, "red"));
+        }
+        // Si el error viene en password
+        else if (errorData.password) {
+          let errorMsg = errorData.password[0];
+
+          if (errorMsg.includes("This password is too common")) {
+            errorMsg = "La contraseña es demasiado común. Usa una más segura.";
+          } else if (errorMsg.includes("This password is too short")) {
+            errorMsg =
+              "La contraseña es muy corta. Debe tener al menos 8 caracteres.";
+          } else if (errorMsg.includes("This password is entirely numeric")) {
+            errorMsg = "La contraseña no puede contener solo números.";
+          }
+
+          dispatch(setAlert(errorMsg, "red"));
+        }
+        // Si las contraseñas no coinciden
+        else if (errorData.non_field_errors) {
+          let errorMsg = errorData.non_field_errors[0];
+
+          if (errorMsg.includes("The two password fields didn't match.")) {
+            errorMsg = "Las contraseñas no coinciden.";
+          }
+
+          dispatch(setAlert(errorMsg, "red"));
+        }
+        // Si el error es un campo vacío
+        else {
+          dispatch(setAlert("Completa todos los campos correctamente.", "red"));
+        }
+      } else {
+        dispatch(
+          setAlert("Error conectando con el servidor, intenta más tarde", "red")
+        );
+      }
     }
   };
 
@@ -204,9 +256,27 @@ export const login = (email, password) => async (dispatch) => {
     dispatch({
       type: REMOVE_AUTH_LOADING,
     });
-    dispatch(
-      setAlert("Error al iniciar de sesion, intentelo mas tarde", "red")
-    );
+    if (error.response) {
+      const errorData = error.response.data;
+
+      if (errorData.detail) {
+        let errorMsg = errorData.detail;
+
+        if (
+          errorMsg.includes(
+            "No active account found with the given credentials"
+          )
+        ) {
+          errorMsg = "Correo o contraseña incorrectos.";
+        }
+
+        dispatch(setAlert(errorMsg, "red"));
+      } else {
+        dispatch(
+          setAlert("Error al iniciar sesión. Inténtalo más tarde.", "red")
+        );
+      }
+    }
   }
 };
 
@@ -386,27 +456,27 @@ export const reset_password_confirm =
         if (res.status === 204) {
           dispatch({
             type: RESET_PASSWORD_CONFIRM_SUCCESS,
-          })
+          });
           dispatch({
             type: REMOVE_AUTH_LOADING,
-          })
+          });
           dispatch(setAlert("Password changed successfully", "green"));
         } else {
           dispatch({
             type: RESET_PASSWORD_CONFIRM_FAIL,
-          })
+          });
           dispatch({
             type: REMOVE_AUTH_LOADING,
-          })
+          });
           dispatch(setAlert("Error changing password", "red"));
         }
       } catch (error) {
         dispatch({
           type: RESET_PASSWORD_CONFIRM_FAIL,
-        })
+        });
         dispatch({
           type: REMOVE_AUTH_LOADING,
-        })
+        });
         dispatch(setAlert("Error changing password", "red"));
       }
     }

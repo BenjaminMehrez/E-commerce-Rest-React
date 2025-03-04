@@ -3,18 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../redux/actions/auth";
 import Layout from "../../hocs/Layout";
-import ClipLoader from "react-spinners/ClipLoader";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loading = useSelector((state) => state.counter.Auth.loading);
-  const isAuthenticated = useSelector((state) => state.counter.Auth.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state) => state.counter.Auth.isAuthenticated
+  );
 
   useEffect(() => {
-    if(isAuthenticated) {
-      navigate('/')
-  }
+    if (isAuthenticated) {
+      navigate("/");
+    }
   }, [isAuthenticated, navigate]);
 
   const [formData, setFormData] = useState({
@@ -37,87 +38,65 @@ const Login = () => {
 
   return (
     <Layout>
-      <div className="bg-gray-300">
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img
-              alt="Your Company"
-              src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-              className="mx-auto h-10 w-auto"
-            />
-            <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
-              Sign in
+      <div className="flex min-h-140 mt-20 mb-40 justify-center">
+        <div className="w-120 rounded-lg p-8">
+          <div className="text-center px-10">
+            <h2 className="my-10 text-center text-4xl font-semibold underline">
+              Iniciar Sesion
             </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
-              Or{" "}
-              <Link
-                to="/signup"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                register
+            <p>Si aún no ha creado una cuenta, por favor <Link to={"/signup"} className="font-medium underline">regístrese</Link> primero.</p>
+          </div>
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-8 mt-13 px-6"
+          >
+            <label className="text-sm font-medium">
+              Correo Electronico
+              <input
+                className="w-full border-b p-1 mt-2 outline-none"
+                value={formData.email}
+                onChange={handleChange}
+                name="email"
+                type="email"
+                required
+              />
+            </label>
+            <label className="text-sm font-medium">
+              Contraseña
+              <input
+                className="w-full border-b p-1 mt-2 outline-none"
+                value={formData.password}
+                onChange={handleChange}
+                name="password"
+                type="password"
+                required
+              />
+            </label>
+
+            <div className="text-sm">
+              <Link to="/reset_password" className="font-medium underline">
+                ¿Olvidaste tu contraseña?
               </Link>
-            </p>
-          </div>
+            </div>
 
-          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-900">
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    value={formData.email}
-                    onChange={handleChange}
-                    name="email"
-                    type="email"
-                    required
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-900">
-                  Password
-                </label>
-                <div className="mt-2">
-                  <input
-                    value={formData.password}
-                    onChange={handleChange}
-                    name="password"
-                    type="password"
-                    required
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm"
-                  />
-                </div>
-              </div>
-
-              <div className="text-sm">
-                <Link
-                  to="/reset_password"
-                  className="font-medium text-indigo-600"
+            <div className="">
+              {loading ? (
+                <button
+                  type="submit"
+                  className="w-full text-white font-medium bg-gray-900 p-2 mt-8 outline-none rounded-md cursor-pointer transition-all"
                 >
-                  Forgot your password?
-                </Link>
-              </div>
-
-              <div>
-                {loading ? (
-                  <button className="w-full flex justify-center bg-violet-800 text-white p-4 rounded">
-                    <ClipLoader color="white" loading={true} size={20} />
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="w-full flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-indigo-600"
-                  >
-                    Login
-                  </button>
-                )}
-              </div>
-            </form>
-          </div>
+                  <span className="loading loading-spinner loading-sm"></span>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full text-white font-medium bg-black p-2 mt-8 outline-none rounded-md cursor-pointer hover:bg-gray-900 transition-all"
+                >
+                  Iniciar Sesion
+                </button>
+              )}
+            </div>
+          </form>
         </div>
       </div>
     </Layout>

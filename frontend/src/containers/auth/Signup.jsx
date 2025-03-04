@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { connect, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signup } from "../../redux/actions/auth";
 import Layout from "../../hocs/Layout";
+import { Link } from "react-router-dom";
 
-function Signup({ signup }) {
+function Signup() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isAuthenticated = useSelector((state) => state.counter.Auth.isAuthenticated);
+  const loading = useSelector((state) => state.counter.Auth.loading);
+  const isAuthenticated = useSelector(
+    (state) => state.counter.Auth.isAuthenticated
+  );
 
   useEffect(() => {
-    if(isAuthenticated) {
-      navigate('/')
-  }
+    if (isAuthenticated) {
+      navigate("/");
+    }
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
@@ -27,7 +32,6 @@ function Signup({ signup }) {
   });
 
   const { first_name, last_name, email, password, re_password } = formData;
-  const [accountCreated, setAccountCreated] = useState(false);
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,113 +39,93 @@ function Signup({ signup }) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-
-    if (password !== re_password) {
-      alert("Las contraseñas no coinciden");
-      return;
-    }
-
-    signup(first_name, last_name, email, password, re_password);
-    setAccountCreated(true);
+    dispatch(signup(first_name, last_name, email, password, re_password));
   };
-
-  useEffect(() => {
-    if (accountCreated) {
-      navigate("/");
-    }
-  }, [accountCreated, navigate]);
 
   return (
     <Layout>
-      <div className="bg-gray-300 min-h-screen flex items-center justify-center">
-        <div className="w-full max-w-sm bg-white p-6 rounded shadow-md">
+      <div className="flex min-h-140 mt-20 mb-40  justify-center">
+        <div className="w-120 rounded-lg p-8">
           <div className="text-center">
-            <img
-              alt="Your Company"
-              src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-              className="mx-auto h-10 w-auto"
-            />
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">Register</h2>
+            <h2 className="my-10 text-center text-4xl font-semibold underline">
+              Registrate
+            </h2>
+            <p>¿Ya tiene una cuenta? Por favor <Link to="/login" className="font-medium underline">inicie sesión.</Link></p>
           </div>
-
-          <form onSubmit={onSubmit} className="mt-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-900">
-                First Name
-              </label>
+          <form onSubmit={onSubmit} className="flex flex-col gap-8 mt-10 px-6">
+            <label className="text-sm font-medium">
+              Nombre
               <input
-                onChange={onChange}
+                className="w-full border-b p-1 mt-2 outline-none"
                 value={first_name}
+                onChange={onChange}
                 name="first_name"
                 type="text"
                 required
-                className="block w-full mt-1 rounded-md bg-white px-3 py-1.5 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-indigo-600"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-900">
-                Last Name
-              </label>
+            </label>
+            <label className="text-sm font-medium">
+              Apellido
               <input
+                className="w-full border-b p-1 mt-2 outline-none"
                 value={last_name}
                 onChange={onChange}
                 name="last_name"
                 type="text"
                 required
-                className="block w-full mt-1 rounded-md bg-white px-3 py-1.5 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-indigo-600"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-900">
-                Email address
-              </label>
+            </label>
+            <label className="text-sm font-medium">
+              Correo Electronico
               <input
+                className="w-full border-b p-1 mt-2 outline-none"
                 value={email}
                 onChange={onChange}
                 name="email"
                 type="email"
                 required
-                className="block w-full mt-1 rounded-md bg-white px-3 py-1.5 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-indigo-600"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-900">
-                Password
-              </label>
+            </label>
+            <label className="text-sm font-medium">
+              Contraseña
               <input
+                className="w-full border-b p-1 mt-2 outline-none"
                 value={password}
                 onChange={onChange}
                 name="password"
                 type="password"
                 required
-                className="block w-full mt-1 rounded-md bg-white px-3 py-1.5 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-indigo-600"
               />
-            </div>
+            </label>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-900">
-                Repeat Password
-              </label>
+            <label className="text-sm font-medium">
+              Confirmar Contraseña
               <input
-                onChange={onChange}
+                className="w-full border-b p-1 mt-2 outline-none"
                 value={re_password}
+                onChange={onChange}
                 name="re_password"
                 type="password"
                 required
-                className="block w-full mt-1 rounded-md bg-white px-3 py-1.5 text-gray-900 border border-gray-300 focus:ring-2 focus:ring-indigo-600"
               />
-            </div>
+            </label>
 
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-white font-semibold hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-600"
-              >
-                Register
-              </button>
+            <div className="">
+              {loading ? (
+                <button
+                  type="submit"
+                  className="w-full text-white font-medium bg-gray-900 p-2 mt-8 outline-none rounded-md cursor-pointer transition-all"
+                >
+                  <span className="loading loading-spinner loading-sm"></span>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full text-white font-medium bg-black p-2 mt-8 outline-none rounded-md cursor-pointer hover:bg-gray-900 transition-all"
+                >
+                  Crear cuenta
+                </button>
+              )}
             </div>
           </form>
         </div>
@@ -150,4 +134,4 @@ function Signup({ signup }) {
   );
 }
 
-export default connect(null, { signup })(Signup);
+export default Signup;
